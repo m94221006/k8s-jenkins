@@ -1,0 +1,37 @@
+
+clusterZone: "cluster.local"
+master:
+  servicePort: 8080
+  targetPort: 8080
+  serviceType: NodePort
+  nodePort: 32000
+  scriptApproval:
+    - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
+    - "new groovy.json.JsonSlurperClassic"
+    - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map"
+    - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods split java.lang.String"
+  installPlugins:
+    - kubernetes:1.7.1   
+    - workflow-aggregator:2.5   
+    - workflow-job:2.21   
+    - credentials-binding:1.16   
+    - git:3.9.1   
+
+agent:
+  volumes:
+    - type: HostPath
+      hostPath: /var/run/docker.sock
+      mountPath: /var/run/docker.sock
+
+persistence:
+ Enabled: true
+ StorageClass: jenkins-volume   
+ Size: 10Gi
+
+networkPolicy:
+  enabled: false
+  apiVersion: extensions/v1beta1
+
+rbac:
+  create: true
+
